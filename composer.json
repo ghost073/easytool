@@ -1,0 +1,22 @@
+{
+    "name": "youling073/easytool",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "youling073",
+            "homepage": "https://github.com/ghost073/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.2.0",
+        "elasticsearch/elasticsearch": "7.3.0"
+    },
+    "autoload": {
+        "files": [],
+        "psr-4": {
+            "Youling073\\Easytool\\" : "src/"
+        }
+    }
+}

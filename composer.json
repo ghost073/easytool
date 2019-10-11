@@ -1,6 +1,13 @@
 {
     "name": "youling073/easytool",
     "type": "library",
+    "description": "常用工具类封装",
+    "keywords": [
+        "elasticsearch",
+        "dateformat",
+        "tool",
+        "validate"
+    ],
     "license": "MIT",
     "authors": [
         {

@@ -29,15 +29,15 @@ class Tool
         ];
         $hash = password_hash($password, PASSWORD_BCRYPT, $options);
         return $hash;
-    }
+   }
 
     /**
-     * 验证密码
-     *
-     * @param $password  密码
-     * @param $hash  密码hash值
-     * @return bool
-     */
+    * 验证密码
+    *
+    * @param $password  密码
+    * @param $hash  密码hash值
+    * @return bool
+    */
     public function verifyPassword($password, $hash)
     {
         if (password_verify($password, $hash)) {
@@ -50,8 +50,12 @@ class Tool
     /**
      * 定义格式化，用id做key
      *
+     * @param  array    $arr        ['one'=>['id'=>1,'title'=>'一'], 'two'=>['id'=>2,'title'=>'二']]
+     * @param string    $flag_key   哪个key做id
+     *
+     * @return array
      */
-    public function defineTxtView($arr, $flag_key = 'id')
+    public function defineTxtView(array $arr, string $flag_key = 'id') : array
     {
         $new_arr = [];
         foreach ($arr as $key => $val) {
@@ -185,7 +189,7 @@ class Tool
      *
      *
      */
-    public function filter_ids(array $id_arr, $is_unique = true)
+    public function filterIds(array $id_arr, $is_unique = true)
     {
         if (empty($id_arr)) {
             return [];
@@ -211,4 +215,114 @@ class Tool
         return $id_arr;
     }
 
+
+    /**
+     * 获取图片的URL地址
+     * 如果是携带http 不做处理否则拼接上域名
+     *
+     * @param string $url
+     * @param string $domain
+     * @return string
+     */
+    public function getImgUrl(string $url, string $domain = '') : string
+    {
+        $url = trim($url);
+        if (!preg_match('/(http:|https:)/i', $url)){
+            $url = $domain.$url;
+        }
+        return $url;
+    }
+
+    /**
+     * ali oss 获得上传视频截取的第一帧
+     *
+     *
+     * @param string $url
+     * @param int $width
+     * @param int $height
+     * @param string $domain
+     * @return string
+     *
+     * https://help.aliyun.com/document_detail/64555.html?spm=a2c4g.11186623.6.1317.2607c1f6MDUDOX
+     */
+    public function aliossVideoImgUrl(string $url, int $width=800, int $height=600, string $domain = '') : string
+    {
+        $url = trim($url);
+        if (!preg_match('/(http:|https:)/i', $url)){
+            $url = $domain.$url;
+        }
+        $url .= '?x-oss-process=video/snapshot,t_8000,f_jpg,w_%s,h_%s,m_fast';
+        $url = sprintf($url, $width, $height);
+
+        return $url;
+    }
+
+    /**
+     * ali oss 获得上传图片缩略图
+     *
+     * @param string $url
+     * @param int $width
+     * @param int $height
+     * @param string $domain
+     * @return string
+     *
+     * https://help.aliyun.com/document_detail/44688.html?spm=a2c4g.11174283.6.1237.19d07da200ehfg
+     */
+    public function aliossResizeImgUrl(string $url, int $width=800, int $height=600, string $domain = '') : string
+    {
+        $url = trim($url);
+        if (!preg_match('/(http:|https:)/i', $url)) {
+            $url = $domain.$url;
+        }
+        $url .= '?x-oss-process=image/resize,m_fill,h_%s,w_%s';
+        $url = sprintf($url, $height, $width);
+
+        return $url;
+    }
+
+    /**
+     * 生成指定长度随机字符串
+     *
+     * @param int $num  字符串长度
+     * @return string
+     */
+    public function randomStr(int $num = 6) : string
+    {
+        // 参数过滤
+        $num = intval($num);
+        if ($num < 1) {
+            $num = 6;
+        }
+        // 生成密码使用的初始值
+        $init_str = '0123456789abcdefghijklmnopqrstuvwxyz';
+        // 返回的值
+        $new_str = '';
+
+        for ($i = 1; $i <= $num; $i ++) {
+            // 字符串顺序随机
+            $str = str_shuffle($init_str);
+            // 截取指定长度
+            $str = substr($str, $i, 1);
+
+            $new_str .= $str;
+        }
+
+        return $new_str;
+    }
+
+    /**
+     * 获得两个值的数值比
+     *
+     * @param int $num1
+     * @param int $num2
+     * @return string
+     */
+    public function getNumPercent(int $num1, int $num2) : string
+    {
+        $num2 = max(1, $num2);
+        $num = ($num1 / $num2) * 100;
+
+        $number = sprintf("%1\$.2f%%",$num);
+        return $number;
+    }
 }

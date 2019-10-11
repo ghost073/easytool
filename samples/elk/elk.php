@@ -81,7 +81,7 @@ switch ($method) {
             ]
         ];
         break;
-    // 添加文档 php elk.php getDocById 1
+    // 通过id获得文档 php elk.php getDocById 1
     case 'getDocById':
         $index_name = 'article';
         $doc_id = $argv[2];

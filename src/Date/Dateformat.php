@@ -235,18 +235,18 @@ class Dateformat {
     }
 
     /**
-     * 获得当天起未来7天的时间
+     * 获得当天起未来N天的时间
      *
      * @param  [type] $day 当天日期
      *
      * @return [type]      [description]
      */
-    public function getFutureWeek($day)
+    public function getFutureDayArr($time, $num = 7)
     {
-        $arr = array();
-        $time = strtotime($day);
+        $arr = [];
+        $time = is_numeric($time) ? $time : strtotime($time);
 
-        for ($i=0; $i<=6; $i++)
+        for ($i=0; $i<=$num; $i++)
         {
             $next_time = $time+$i*86400;
             // 日期详细信息
@@ -284,7 +284,7 @@ class Dateformat {
     }
 
     /**
-     * 获得当前天数
+     * 获得当前日期
      *
      * @param $time 时间
      * @return false|string
@@ -321,6 +321,74 @@ class Dateformat {
     {
         $time = is_numeric($time) ? $time : strtotime($time);
         $day = date('Y-m-d', strtotime("+{$num} days", $time));
+        return $day;
+    }
+
+    /**
+     * 根据时间获得年份第一天
+     *
+     * @param    int     $time       时间戳
+     *
+     * @return   string              时间 ex:2013-01-01
+     */
+    public function getYearFirstDay($time) {
+        $time = is_numeric($time) ? $time : strtotime($time);
+        $day = date('Y-01-01', $time);
+        return $day;
+    }
+
+    /**
+     * 根据时间获得年份最后一天
+     *
+     * @param    int     $time       时间戳
+     *
+     * @return   string              时间 ex:2013-01-01
+     */
+    public function getYearLastDay($time) {
+        $time = is_numeric($time) ? $time : strtotime($time);
+        $day = date('Y-12-31', $time);
+        return $day;
+    }
+
+    /**
+     * 根据时间获得季度第一天
+     *
+     * @param    int     $time       时间戳
+     *
+     * @return   string              时间 ex:2013-01-01
+     */
+    public function getQuarterFirstDay($time) {
+        $time = is_numeric($time) ? $time : strtotime($time);
+
+        $season = ceil(date('n', $time) /3); //获取月份的季度
+        $day = date('Y-m-01', mktime(0,0,0,($season - 1) *3 +1,1,date('Y')));
+
+        return $day;
+    }
+    /**
+     * 根据时间获得季度最后一天
+     *
+     * @param    int     $time       时间戳
+     *
+     * @return   string              时间 ex:2013-01-01
+     */
+    public function getQuarterLastDay($time) {
+        $time = is_numeric($time) ? $time : strtotime($time);
+        $season = ceil(date('n', $time) /3); //获取月份的季度
+        $day = date('Y-m-t',mktime(0,0,0,$season * 3,1,date('Y')));;
+
+        return $day;
+    }
+
+    /**
+     * 获得下周1的时间
+     *
+     * @param $time
+     * @return false|string
+     */
+    public function getNextMonday($time) {
+        $time = is_numeric($time) ? $time : strtotime($time);
+        $day = date('Y-m-d', strtotime('sunday +1 day', $time));
         return $day;
     }
 }

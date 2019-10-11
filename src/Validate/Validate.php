@@ -142,7 +142,7 @@ class Validate {
     }
 
     /**
-     * 检查密码在某个区间之内，切中英文混合
+     * 检查密码在某个区间之内，且英文字母混合
      *
      * @param string $password
      * @param int $min
@@ -163,5 +163,95 @@ class Validate {
         }
 
         return true;
+    }
+
+    /**
+     * 字数在某区间
+     *
+     * @param string $str   字符串
+     * @param int $min  最小长度
+     * @param int $max  最大长度
+     * @param string $charset   字符编码
+     * @return bool
+     */
+    public function checkCharNum(string $str, int $min = 1, int $max = 500, string $charset = 'utf8') : bool
+    {
+        $str = trim($str);
+        if ($str === '') {
+            return false;
+        }
+
+        $str_len = mb_strlen($str, $charset);
+        if (($str_len < $min)
+            || ($str_len > $max)
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 2位小数
+     *
+     * @param float $num
+     * @return bool
+     */
+    public function isTwoFloat(float $num) : bool
+    {
+        $res = false;
+        $preg_name='/^\d+(\.\d{2})$/';
+        if(preg_match($preg_name, $num)){
+            $res = true;
+        }
+        return $res;
+    }
+
+    /**
+     * １位小数
+     *
+     * @param float $num
+     * @return bool
+     */
+    public function isOneFloat(float $num) : bool
+    {
+        $res = false;
+        $preg_name='/^\d+(\.\d{1})$/';
+        if(preg_match($preg_name, $num)){
+            $res = true;
+        }
+        return $res;
+    }
+
+    /**
+     * 是否正整数
+     *
+     * @param int $num
+     * @return bool
+     */
+    public function isRPint(int $num) : bool
+    {
+        $res = false;
+        $preg_name='/^[1-9]\d*$/';
+        if(preg_match($preg_name, $num)){
+            $res = true;
+        }
+        return $res;
+    }
+
+    /**
+     * 是否整数
+     *
+     * @param int $num
+     * @return bool
+     */
+    public function isInt(int $num) : bool
+    {
+        $res = false;
+        $preg_name='/^-?\d+$/';
+        if(preg_match($preg_name, $num)){
+            $res = true;
+        }
+        return $res;
     }
 }

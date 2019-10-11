@@ -38,7 +38,6 @@ class Idcard
      */
     protected $idLength;
 
-    protected $isValidate = false;
 
     protected $cityCode = [];
 
@@ -57,19 +56,18 @@ class Idcard
     /**
      *
      * @param string $id
-     * @throws \Exception
      */
     public function setId($id)
     {
-        if (!$id) {
-            throw new \Exception('param "id" must not be null.');
+        if (empty($id)
+            && (!is_string($id))
+        ) {
+            return false;
         }
-        if (!is_string($id)) {
-            throw new \Exception('the type of param $id must be string.');
-        }
-        $this->idNumber = trim($id);//var_dump($this->idNumber);
+        $this->idNumber = trim($id);
         $this->idLength = strlen($id);
-        $this->isValidate = false;
+
+        return true;
     }
 
     /**
@@ -78,23 +76,16 @@ class Idcard
      * @param string $id
      * @return boolean
      */
-    public function isValidate($id = null)
+    public function isValidate($id)
     {
-        if ($this->isValidate) {
-            return true;
-        }
-        if (!empty($id)) {
-            $this->setId($id);
-        }
-
-        if (empty($this->idNumber)) {
-            throw new \Exception('Id number must be set.');
+        $set_res = $this->setId($id);
+        if (false === $set_res) {
+            return false;
         }
 
         if ($this->checkFormat()
             && $this->checkBirthday()
             && $this->checkLastCode()) {
-            $this->isValidate = true;
             return true;
         }
 
@@ -179,5 +170,28 @@ class Idcard
             return false;
         }
         return true;
+    }
+
+    /**
+     * 获得年龄
+     * 需要先执行isValidate 方法，验证身份证号
+     *
+     * @param string $time
+     * @return string
+     */
+    public function getAge(string $time) : string
+    {
+        $time = is_numeric($time) ? $time : strtotime($time);
+        $birthday = $this->getBirthday();
+        $birthday_time = strtotime($birthday);
+
+        $now_y = date('Y', $time);
+        $now_md = date('md', $time);
+
+        $birthday_y = date('Y', $birthday_time);
+        $birthday_md = date('md', $birthday_time);
+
+        $age = ($now_y - $birthday_y) + ($now_md >= $birthday_md ? 1 : 0);
+        return $age;
     }
 }
